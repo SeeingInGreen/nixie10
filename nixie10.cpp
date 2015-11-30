@@ -3,7 +3,7 @@
 * Chris Green - 11/29/2015
 */
 
-#include 'nixie10.h'
+#include <nixie10.h>
 
 void nixie10::initialize_sn74141(int pins[4], int initVal){
 	_pins[0] = pins[0];
@@ -24,13 +24,12 @@ void nixie10::initialize_sn74141(int pins[4]){
 void nixie10::set_sn74141(int digit){
 	int bcd[4];
 	_dec_to_bcd(digit, bcd);
-	for(int i = 0, i<4, i++) digitalWrite(_pins[i], ((bcd[i]) ? HIGH : LOW));
+	for(int i = 0; i<4; i++) digitalWrite(_pins[i], ((bcd[i]) ? HIGH : LOW));
 }
 
 void nixie10::clear_sn74141(){
 	int bcd[4] = {1, 1, 1, 1};
-	_dec_to_bcd(digit, bcd);
-	for(int i = 0, i<4, i++) digitalWrite(_pins[i], ((bcd[i]) ? HIGH : LOW));
+	for(int i = 0; i<4; i++) digitalWrite(_pins[i], ((bcd[i]) ? HIGH : LOW));
 }
 
 void nixie10::_dec_to_bcd(int decimal, int* bcd){ //converts a decimal to a bcd string
