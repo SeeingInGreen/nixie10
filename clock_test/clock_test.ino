@@ -9,8 +9,11 @@
 
 #include <nixie10.h>
 
-//global variables
-int seconds = 0; //seconds value that MUST be reset back to zero every 60sec
+#define HOURBUTTONPIN 19
+#define MINUTEBUTTONPIN 18
+
+//global variables - make sure these can't overflow!!!
+int seconds = 0; //seconds value
 int minutes[2] = {0,0}; //int array for minutes: tens, ones
 int hours[2] = {1, 2}; //int array for hours: tens, ones
 
@@ -28,12 +31,13 @@ void setup() {
 }
 
 void loop() {
-  if(seconds == 60){
+  if(seconds == 60||digitalRead(MINUTEBUTTONPIN)){
     seconds = 0;
+    minutes[1]++;
     if(minutes[1] == 10){
       minutes[1]=0;
       minutes[2]++;
-      if(minutes[2] == 6){
+      if(minutes[2] == 6||digitalRead(HOURBUTTONPIN)){
        minutes[2]=0;
        hours[1]++;
        if(hours[1]==10){
