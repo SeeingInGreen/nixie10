@@ -9,8 +9,8 @@
 
 #include <nixie10.h>
 
-#define HOURBUTTONPIN 19
-#define MINUTEBUTTONPIN 18
+#define HOURBUTTONPIN 2
+#define MINUTEBUTTONPIN 3
 
 //global variables - make sure these can't overflow!!!
 int seconds = 0; //seconds value
@@ -36,14 +36,12 @@ void setup() {
 void loop() {
   time1 = millis(); //record pre-loop time
   if(seconds == 60){
-  //if(seconds == 60||digitalRead(MINUTEBUTTONPIN)){
     seconds = 0;
     minutes[1]++;
     if(minutes[1] == 10){
       minutes[1]=0;
       minutes[0]++;
       if(minutes[0] == 6){
-      //if(minutes[0] == 6||digitalRead(HOURBUTTONPIN)){
        minutes[0]=0;
        hours[1]++;
        if(hours[0]){
@@ -61,13 +59,50 @@ void loop() {
         }
        }
       }
+      time2 = millis(); //record post-loop time
+while(digitalRead(HOURBUTTONPIN)){
+       hours[1]++;
+       if(hours[0]){
+         if (hours[1]==3){
+           hours[1]=1;
+          hours[0]=0;
+         }
+       }
+       else{
+          if (hours[1]==10){
+          hours[1] = 0;
+          hours[0]++;
+          }
+         }
+         delay(300);
+         one_min.set_sn74141(minutes[1]);
+         ten_min.set_sn74141(minutes[0]);
+         one_hour.set_sn74141(hours[1]);
+         hours[0] ? ten_hour.set_sn74141(hours[0]) : ten_hour.set_sn74141(11); //turn the tube off instead of displaying a zero
+        }
+while(digitalRead(MINUTEBUTTONPIN)){
+    seconds = 0;
+    minutes[1]++;
+    if(minutes[1] == 10){
+      minutes[1]=0;
+      minutes[0]++;
+    }
+    if(minutes[0] == 6){
+      minutes[0] = 0;
+    }
+    delay(300);
+    one_min.set_sn74141(minutes[1]);
+    ten_min.set_sn74141(minutes[0]);
+    one_hour.set_sn74141(hours[1]);
+    hours[0] ? ten_hour.set_sn74141(hours[0]) : ten_hour.set_sn74141(11); //turn the tube off instead of displaying a zero
+  }
   //clock update code
   one_min.set_sn74141(minutes[1]);
   ten_min.set_sn74141(minutes[0]);
   one_hour.set_sn74141(hours[1]);
   hours[0] ? ten_hour.set_sn74141(hours[0]) : ten_hour.set_sn74141(11); //turn the tube off instead of displaying a zero
   seconds++;
-  time2 = millis(); //record post-loop time
+  
   //Serial.println(time2-time1); //DEBUG
   delay((1000-(time2-time1)));
 }
