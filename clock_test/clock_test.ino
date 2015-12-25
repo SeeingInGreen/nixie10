@@ -66,8 +66,8 @@ void setup() {
 
 void loop() {
   DateTime now = rtc.now();
-  hours = now.hour();
-  minutes = now.minute();
+  hours = (now.hour() ? now.hour() : 12); //account for the fact that in 24hr time, this is zero for 12AM
+  minutes = now.minute();  
 
   if(digitalRead(HOURBUTTONPIN)){
     if(hours < 23)
