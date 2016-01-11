@@ -58,7 +58,7 @@ void nixie10::initialize_16reg(int latchPin, int clockPin, int dataPin){ //these
 	pinMode(_latchPin, OUTPUT);
 	pinMode(_clockPin, OUTPUT);
 	pinMode(_dataPin, OUTPUT);
-	set_16reg(0, 0, 0, 0); //initialize register to 0'b0000000000000000
+	set_16reg(9, 9, 9, 9); //initialize register to 0'b0000000000000000
 }
 void nixie10::set_16reg(int ten_hour, int one_hour, int ten_minute, int one_minute){ //set all tube values
 	int ten_hour_a[4], one_hour_a[4], ten_minute_a[4], one_minute_a[4];
@@ -69,14 +69,15 @@ void nixie10::set_16reg(int ten_hour, int one_hour, int ten_minute, int one_minu
 	_dec_to_bcd(one_minute, one_minute_a);
 	//shift in arrays in most-to-lease significant bit order
 	//TODO: find a more efficient way to do this
-	for(int i = 3; i > 0; i-=1) _my_shift_out(_dataPin, _clockPin, ten_hour[i]);
-	for(int j = 3; j > 0; j-=1) _my_shift_out(_dataPin, _clockPin, one_hour[j]);
-	for(int k = 3; k > 0; k-=1) _my_shift_out(_dataPin, _clockPin, ten_minute[k]);
-	for(int l = 3; l > 0; l-=1) _my_shift_out(_dataPin, _clockPin, one_minute[l]);
+	digitalWrite(_latchPin, LOW);
+	for(int i = 3; i >= 0; i--) _my_shift_out(_dataPin, _clockPin, ten_hour_a[i]);
+	for(int j = 3; j >= 0; j--) _my_shift_out(_dataPin, _clockPin, one_hour_a[j]);
+	for(int k = 3; k >= 0; k--) _my_shift_out(_dataPin, _clockPin, ten_minute_a[k]);
+	for(int l = 3; l >= 0; l--) _my_shift_out(_dataPin, _clockPin, one_minute_a[l]);
+	digitalWrite(_latchPin, HIGH);
 }
-void nixie10::_my_shift_out(int dataPin, int clockPin, int val){  //my own implementation of Arduino's shiftOut(), 1 bit only;
-	//TODO: check timing
-	digitalWrite(dataPin, !!(val)); //the double negation ensures one or zero
+void nixie10::_my_shift_out(int dataPin, int clockPin, int val){
+	digitalWrite(dataPin, val);
 	digitalWrite(clockPin, HIGH);
     digitalWrite(clockPin, LOW);
 }
