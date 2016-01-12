@@ -58,7 +58,7 @@ void nixie10::initialize_16reg(int latchPin, int clockPin, int dataPin){ //these
 	pinMode(_latchPin, OUTPUT);
 	pinMode(_clockPin, OUTPUT);
 	pinMode(_dataPin, OUTPUT);
-	set_16reg(9, 9, 9, 9); //initialize register to 0'b0000000000000000
+	set_16reg(9, 9, 9, 9); //initialize register to 0'b1001100110011001
 }
 void nixie10::set_16reg(int ten_hour, int one_hour, int ten_minute, int one_minute){ //set all tube values
 	int ten_hour_a[4], one_hour_a[4], ten_minute_a[4], one_minute_a[4];
@@ -67,7 +67,7 @@ void nixie10::set_16reg(int ten_hour, int one_hour, int ten_minute, int one_minu
 	_dec_to_bcd(one_hour, one_hour_a);
 	_dec_to_bcd(ten_minute, ten_minute_a);
 	_dec_to_bcd(one_minute, one_minute_a);
-	//shift in arrays in most-to-lease significant bit order
+	//shift in arrays in most-to-least significant bit order
 	//TODO: find a more efficient way to do this
 	digitalWrite(_latchPin, LOW);
 	for(int i = 3; i >= 0; i--) _my_shift_out(_dataPin, _clockPin, ten_hour_a[i]);
